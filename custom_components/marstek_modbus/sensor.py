@@ -36,6 +36,9 @@ async def async_setup_entry(
     entities.extend(
         MarstekStoredEnergySensor(coordinator, d) for d in coordinator.STORED_ENERGY_SENSOR_DEFINITIONS
     )
+    entities.extend(
+        MarstekBatteryCycleSensor(coordinator, d) for d in coordinator.CYCLE_SENSOR_DEFINITIONS
+    )
 
     # Add all entities to Home Assistant
     async_add_entities(entities)
@@ -443,6 +446,19 @@ class MarstekStoredEnergySensor(MarstekCalculatedSensor):
         stored_energy = round((soc / 100) * capacity, 2)
         self._attr_native_value = stored_energy
         return stored_energy
+
+
+class MarstekBatteryCycleSensor(MarstekCalculatedSensor):
+    """Calculate estimated battery cycles from total discharge energy and capacity."""
+
+    def calculate_value(self, dep_values: dict):
+        discharge = dep_values.get("discharge")
+        capacity = dep_values.get("capacity")
+        if discharge is None or capacity in (None, 0):
+            return None
+        cycles = round(discharge / capacity, 2)
+        self._attr_native_value = cycles
+        return cycles
 
 
 class MarstekEfficiencySensor(MarstekCalculatedSensor):

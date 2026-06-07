@@ -206,6 +206,9 @@
       "stored_energy": {
         "name": "Opgeslagen Energie"
       },
+      "battery_cycle_count": {
+        "name": "Cycli"
+      },
       "mppt1_voltage": {
         "name": "MPPT1 Spanning"
       },

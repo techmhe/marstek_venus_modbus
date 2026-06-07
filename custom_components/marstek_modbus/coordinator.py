@@ -63,6 +63,7 @@ class MarstekCoordinator(DataUpdateCoordinator):
         self.BUTTON_DEFINITIONS = []
         self.EFFICIENCY_SENSOR_DEFINITIONS = []
         self.STORED_ENERGY_SENSOR_DEFINITIONS = []
+        self.CYCLE_SENSOR_DEFINITIONS = []
 
         # Combine all sensor definitions for polling
         self._all_definitions = []
@@ -220,6 +221,7 @@ class MarstekCoordinator(DataUpdateCoordinator):
             self.BUTTON_DEFINITIONS = data.get("BUTTON_DEFINITIONS", [])
             self.EFFICIENCY_SENSOR_DEFINITIONS = data.get("EFFICIENCY_SENSOR_DEFINITIONS", [])
             self.STORED_ENERGY_SENSOR_DEFINITIONS = data.get("STORED_ENERGY_SENSOR_DEFINITIONS", [])
+            self.CYCLE_SENSOR_DEFINITIONS = data.get("CYCLE_SENSOR_DEFINITIONS", [])
 
             # Combine into a single list for polling
             self._all_definitions = (
@@ -456,7 +458,11 @@ class MarstekCoordinator(DataUpdateCoordinator):
         entity_registry = er.async_get(self.hass)
 
         # Collect all dependency keys from all definitions
-        all_definitions_for_deps = self.EFFICIENCY_SENSOR_DEFINITIONS + self.STORED_ENERGY_SENSOR_DEFINITIONS
+        all_definitions_for_deps = (
+            self.EFFICIENCY_SENSOR_DEFINITIONS
+            + self.STORED_ENERGY_SENSOR_DEFINITIONS
+            + self.CYCLE_SENSOR_DEFINITIONS
+        )
         dependency_keys_set = {
             dep_key
             for defn in all_definitions_for_deps
@@ -759,6 +765,9 @@ def get_registers(version: str):
                     "STORED_ENERGY_SENSOR_DEFINITIONS": _normalize_section(
                         data.get("STORED_ENERGY_SENSOR_DEFINITIONS")
                     ),
+                    "CYCLE_SENSOR_DEFINITIONS": _normalize_section(
+                        data.get("CYCLE_SENSOR_DEFINITIONS")
+                    ),
                 }
             except Exception as e:
                 _LOGGER.warning("Failed to load YAML registers %s: %s", yaml_path, e)
@@ -788,6 +797,9 @@ def get_registers(version: str):
             "STORED_ENERGY_SENSOR_DEFINITIONS": getattr(
                 registers, "STORED_ENERGY_SENSOR_DEFINITIONS", []
             ),
+            "CYCLE_SENSOR_DEFINITIONS": getattr(
+                registers, "CYCLE_SENSOR_DEFINITIONS", []
+            ),
         }
 
     # Default empty return if nothing found
@@ -800,4 +812,5 @@ def get_registers(version: str):
         "BUTTON_DEFINITIONS": [],
         "EFFICIENCY_SENSOR_DEFINITIONS": [],
         "STORED_ENERGY_SENSOR_DEFINITIONS": [],
+        "CYCLE_SENSOR_DEFINITIONS": [],
     }

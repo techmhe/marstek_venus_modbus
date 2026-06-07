@@ -197,6 +197,9 @@
       "stored_energy": {
         "name": "Gespeicherte Energie"
       },
+      "battery_cycle_count": {
+        "name": "Zyklen"
+      },
       "mppt1_voltage": {
         "name": "MPPT1 Spannung"
       },
