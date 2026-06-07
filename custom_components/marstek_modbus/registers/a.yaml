@@ -827,7 +827,7 @@ NUMBER_DEFINITIONS:
         enabled_by_default: false
         icon: "mdi:battery-arrow-up-outline"
         min: 0
-        max: 1200
+        max: 1500
         step: 50
         unit: W
         data_type: uint16
@@ -837,7 +837,7 @@ NUMBER_DEFINITIONS:
         enabled_by_default: false
         icon: "mdi:battery-arrow-down-outline"
         min: 0
-        max: 1200
+        max: 1500
         step: 50
         unit: W
         data_type: uint16
@@ -847,7 +847,7 @@ NUMBER_DEFINITIONS:
         enabled_by_default: false
         icon: "mdi:battery-arrow-up-outline"
         min: 0
-        max: 1200
+        max: 1500
         step: 50
         unit: W
         data_type: uint16
@@ -857,7 +857,7 @@ NUMBER_DEFINITIONS:
         enabled_by_default: false
         icon: "mdi:battery-arrow-down-outline"
         min: 0
-        max: 1200
+        max: 1500
         step: 50
         unit: W
         data_type: uint16
@@ -1009,8 +1009,8 @@ NUMBER_DEFINITIONS:
         register: 43103
         enabled_by_default: false
         icon: "mdi:cog"
-        min: -2500
-        max: 2500
+        min: -1500
+        max: 1500
         step: 1
         unit: W
         data_type: int16
@@ -1020,8 +1020,8 @@ NUMBER_DEFINITIONS:
         register: 43108
         enabled_by_default: false
         icon: "mdi:cog"
-        min: -2500
-        max: 2500
+        min: -1500
+        max: 1500
         step: 1
         unit: W
         data_type: int16
@@ -1031,8 +1031,8 @@ NUMBER_DEFINITIONS:
         register: 43113
         enabled_by_default: false
         icon: "mdi:cog"
-        min: -2500
-        max: 2500
+        min: -1500
+        max: 1500
         step: 1
         unit: W
         data_type: int16
@@ -1042,8 +1042,8 @@ NUMBER_DEFINITIONS:
         register: 43118
         enabled_by_default: false
         icon: "mdi:cog"
-        min: -2500
-        max: 2500
+        min: -1500
+        max: 1500
         step: 1
         unit: W
         data_type: int16
@@ -1053,8 +1053,8 @@ NUMBER_DEFINITIONS:
         register: 43123
         enabled_by_default: false
         icon: "mdi:cog"
-        min: -2500
-        max: 2500
+        min: -1500
+        max: 1500
         step: 1
         unit: W
         data_type: int16
@@ -1064,8 +1064,8 @@ NUMBER_DEFINITIONS:
         register: 43128
         enabled_by_default: false
         icon: "mdi:cog"
-        min: -2500
-        max: 2500
+        min: -1500
+        max: 1500
         step: 1
         unit: W
         data_type: int16
