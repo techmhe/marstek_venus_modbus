@@ -33,11 +33,19 @@ class MarstekCoordinator(DataUpdateCoordinator):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry):
         """Initialize the coordinator with connection parameters and update interval."""        
         self.hass = hass
-        self.host = entry.data["host"]
-        self.port = entry.data["port"]
-        self.message_wait_ms = entry.data.get("message_wait_milliseconds")
-        self.timeout = entry.data.get("timeout")
-        self.unit_id = entry.data.get("unit_id", DEFAULT_UNIT_ID)
+        entry_data = entry.data or {}
+
+        self.host = entry_data.get("host")
+        self.port = entry_data.get("port")
+        if self.host is None or self.port is None:
+            raise ValueError(
+                "Config entry is missing required connection data (host/port). "
+                "Please reconfigure the Marstek integration."
+            )
+
+        self.message_wait_ms = entry_data.get("message_wait_milliseconds")
+        self.timeout = entry_data.get("timeout")
+        self.unit_id = entry_data.get("unit_id", DEFAULT_UNIT_ID)
 
         # Mapping from sensor key to entity type for logging and processing
         self._entity_types: dict[str, str] = {}
@@ -533,6 +541,31 @@ class MarstekCoordinator(DataUpdateCoordinator):
             value = await self.async_read_value(sensor, key)
 
             if value is not None:
+                # For total_increasing sensors, ignore suspicious drops/10x glitches,
+                # but do not fail the whole coordinator cycle.
+                # Daily/monthly counters may legitimately reset and are excluded.
+                if sensor.get("state_class") == "total_increasing" and isinstance(value, (int, float)):
+                    allow_reset = "_daily_" in key or "_monthly_" in key
+                    if not allow_reset:
+                        previous_value = self.data.get(key) if isinstance(self.data, dict) else None
+                        if isinstance(previous_value, (int, float)):
+                            regression = value < previous_value
+                            scale_glitch = (
+                                previous_value > 0
+                                and 0.08 <= (value / previous_value) <= 0.12
+                            )
+                            if regression or scale_glitch:
+                                reason = "regression" if regression else "possible 10x scaling glitch"
+                                _LOGGER.warning(
+                                    "Ignoring suspicious %s for total_increasing sensor '%s' (new=%s, previous=%s)",
+                                    reason,
+                                    key,
+                                    value,
+                                    previous_value,
+                                )
+                                self._last_update_times[key] = now
+                                continue
+
                 # Special-case: for packed schedule sensors, store both the
                 # raw 5-register list as the main `data[key]` and the decoded
                 # dict under `data["<key>_attrs"]` so sensors can expose
